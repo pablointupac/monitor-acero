@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-10-09T14:37+00:00",
+ "actualizado": "2026-10-09T14:49+00:00",
  "fechas": {
   "hrc": "2026-10-09",
   "usdclp": "2026-10-09"
@@ -171,7 +171,7 @@
  "fuentes": {
   "hrc_spot": "100ppi.com vía akshare (spot Shanghái)",
   "hrc_futuros": "SHFE vía Sina/akshare",
-  "usdclp": "mindicador.cl (BCCh)",
+  "usdclp": "Banco Central de Chile",
   "cny": "open.er-api.com",
   "tasas_usd": "FRED (T-Bills 1/3/6 meses)",
   "tpm": "mindicador.cl (BCCh)"
