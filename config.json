@@ -1,0 +1,17 @@
+{
+  "costos_chile": {
+    "flete_usd_t": 65,
+    "internacion_pct": 3.5,
+    "arancel_pct": 0
+  },
+  "iva_china_pct": 13,
+  "horizontes_dias": { "1m": 30, "3m": 91, "6m": 182 },
+  "compras_galvanizado": [
+    {
+      "mes": "2026-07",
+      "precio_usd_t": 733,
+      "incoterm": "CFR",
+      "producto": "Galvanizado 0,80 x 1220 mm Z180 ASTM A653 SS40"
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+{
+ "actualizado": "2026-10-09T14:37+00:00",
+ "fechas": {
+  "hrc": "2026-10-09",
+  "usdclp": "2026-10-09"
+ },
+ "proyecciones": {
+  "spot": {
+   "fecha_objetivo": "2026-10-09",
+   "usdclp": 981.61,
+   "hrc": {
+    "cny_t": 3268.0,
+    "fob_usd_t": 430.7,
+    "fob_clp_t": 422747,
+    "puesto_usd_t": 513.0,
+    "puesto_clp_t": 503580
+   },
+   "galv": {
+    "fob_usd_t": 667.0,
+    "fob_clp_t": 654778,
+    "puesto_usd_t": 757.7,
+    "puesto_clp_t": 743733
+   }
+  },
+  "1m": {
+   "fecha_objetivo": "2026-11-08",
+   "usdclp": 981.96,
+   "hrc": {
+    "cny_t": 3225.3,
+    "fob_usd_t": 425.0,
+    "fob_clp_t": 417366,
+    "puesto_usd_t": 507.2,
+    "puesto_clp_t": 498036
+   },
+   "galv": {
+    "fob_usd_t": 661.4,
+    "fob_clp_t": 649481,
+    "puesto_usd_t": 751.8,
+    "puesto_clp_t": 738274
+   }
+  },
+  "3m": {
+   "fecha_objetivo": "2027-01-08",
+   "usdclp": 982.3,
+   "hrc": {
+    "cny_t": 3248.1,
+    "fob_usd_t": 428.0,
+    "fob_clp_t": 420462,
+    "puesto_usd_t": 510.3,
+    "puesto_clp_t": 501262
+   },
+   "galv": {
+    "fob_usd_t": 664.4,
+    "fob_clp_t": 652656,
+    "puesto_usd_t": 754.9,
+    "puesto_clp_t": 741583
+   }
+  },
+  "6m": {
+   "fecha_objetivo": "2027-04-09",
+   "usdclp": 982.68,
+   "hrc": {
+    "cny_t": 3256.8,
+    "fob_usd_t": 429.2,
+    "fob_clp_t": 421753,
+    "puesto_usd_t": 511.5,
+    "puesto_clp_t": 502624
+   },
+   "galv": {
+    "fob_usd_t": 665.6,
+    "fob_clp_t": 654037,
+    "puesto_usd_t": 756.1,
+    "puesto_clp_t": 743038
+   }
+  }
+ },
+ "curva_hrc": [
+  {
+   "contrato": "HC2610",
+   "vence": "2026-10-15",
+   "settle_cny": 3209.0,
+   "volumen": 1440,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2611",
+   "vence": "2026-11-15",
+   "settle_cny": 3230.0,
+   "volumen": 23385,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2612",
+   "vence": "2026-12-15",
+   "settle_cny": 3238.0,
+   "volumen": 577,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2701",
+   "vence": "2027-01-15",
+   "settle_cny": 3251.0,
+   "volumen": 438994,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2702",
+   "vence": "2027-02-15",
+   "settle_cny": 3260.0,
+   "volumen": 86,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2703",
+   "vence": "2027-03-15",
+   "settle_cny": 3260.0,
+   "volumen": 46788,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2704",
+   "vence": "2027-04-15",
+   "settle_cny": 3256.0,
+   "volumen": 3,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2705",
+   "vence": "2027-05-15",
+   "settle_cny": 3267.0,
+   "volumen": 11048,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2706",
+   "vence": "2027-06-15",
+   "settle_cny": 3271.0,
+   "volumen": 19,
+   "fecha": "2026-10-09"
+  },
+  {
+   "contrato": "HC2707",
+   "vence": "2027-07-15",
+   "settle_cny": 3281.0,
+   "volumen": 5,
+   "fecha": "2026-10-09"
+  }
+ ],
+ "parametros": {
+  "cny_por_usd": 6.7153,
+  "tpm_pct": 4.5,
+  "tasas_usd_pct": {
+   "1m": 4.07,
+   "3m": 4.22,
+   "6m": 4.28
+  },
+  "premio_galv_usd_t": 236.4,
+  "compra_referencia": {
+   "mes": "2026-07",
+   "precio_usd_t": 733,
+   "incoterm": "CFR",
+   "producto": "Galvanizado 0,80 x 1220 mm Z180 ASTM A653 SS40",
+   "fob_usd_t": 668,
+   "hrc_fob_ref_usd_t": 431.6
+  },
+  "flete_usd_t": 65,
+  "internacion_pct": 3.5,
+  "arancel_pct": 0,
+  "iva_china_pct": 13
+ },
+ "fuentes": {
+  "hrc_spot": "100ppi.com vía akshare (spot Shanghái)",
+  "hrc_futuros": "SHFE vía Sina/akshare",
+  "usdclp": "mindicador.cl (BCCh)",
+  "cny": "open.er-api.com",
+  "tasas_usd": "FRED (T-Bills 1/3/6 meses)",
+  "tpm": "mindicador.cl (BCCh)"
+ }
+}

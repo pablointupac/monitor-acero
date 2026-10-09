@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monitor Acero y Dólar</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f5f5f3;
+  --surface-1: #fcfcfb;
+  --border: #e3e2dc;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #7a7974;
+  --grid: #ecebe6;
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --up: #b3261e;
+  --down: #1e7a3c;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --bg: #121211;
+    --surface-1: #1a1a19;
+    --border: #2e2e2c;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #8f8e86;
+    --grid: #2a2a28;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --up: #f08b84;
+    --down: #6cc48a;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211; --surface-1: #1a1a19; --border: #2e2e2c;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #8f8e86; --grid: #2a2a28;
+  --series-1: #3987e5; --series-2: #d95926; --up: #f08b84; --down: #6cc48a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text-primary);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 48px; }
+header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px; margin-bottom: 20px; }
+h1 { font-size: 22px; margin: 0; }
+h2 { font-size: 16px; margin: 0 0 4px; }
+.sub { color: var(--text-secondary); font-size: 13px; margin: 2px 0 0; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: var(--surface-1); color: var(--text-secondary); padding: 6px 14px; font: inherit; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--text-primary); color: var(--surface-1); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.label { color: var(--text-secondary); font-size: 13px; }
+.hero { font-size: 32px; font-weight: 600; font-variant-numeric: tabular-nums; margin: 4px 0 2px; }
+.hero small { font-size: 14px; font-weight: 400; color: var(--text-secondary); }
+table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 6px 4px; border-top: 1px solid var(--grid); }
+th:first-child, td:first-child { text-align: left; }
+th { font-weight: 500; color: var(--text-secondary); font-size: 13px; }
+.chg { font-size: 12px; margin-left: 4px; }
+.chg.up { color: var(--up); } .chg.down { color: var(--down); }
+section { margin-top: 24px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+.chart { position: relative; height: 280px; margin-top: 8px; }
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--text-secondary); margin-top: 4px; flex-wrap: wrap; }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 6px; background: var(--c); }
+.legend span.dash::before { background: repeating-linear-gradient(90deg, var(--c) 0 4px, transparent 4px 7px); }
+.notes { color: var(--text-secondary); font-size: 13px; }
+.notes li { margin: 4px 0; }
+.err { background: var(--surface-1); border: 1px solid var(--up); border-radius: 12px; padding: 16px; }
+@media (max-width: 400px) { .hero { font-size: 26px; } .cards, .grid2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Monitor acero China y USD/CLP</h1>
+      <p class="sub" id="stamp">Cargando…</p>
+    </div>
+    <div class="seg" role="group" aria-label="Moneda">
+      <button data-cur="usd" aria-pressed="true">USD/t</button>
+      <button data-cur="clp" aria-pressed="false">CLP/t</button>
+    </div>
+  </header>
+
+  <div class="cards" id="cards"></div>
+
+  <section class="card">
+    <h2>Costo puesto en Chile</h2>
+    <p class="sub" id="costSub"></p>
+    <table id="costTable"></table>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <h2>Acero: histórico y proyección</h2>
+      <p class="sub" id="steelSub">FOB China aproximado</p>
+      <div class="legend">
+        <span style="--c:var(--series-1)">HRC</span>
+        <span style="--c:var(--series-2)">Galvanizado Z180</span>
+        <span class="dash" style="--c:var(--text-muted)">Proyección</span>
+      </div>
+      <div class="chart"><canvas id="steelChart" aria-label="Precio histórico y proyectado del acero"></canvas></div>
+    </div>
+    <div class="card">
+      <h2>Dólar observado: histórico y forward</h2>
+      <p class="sub">CLP por USD</p>
+      <div class="legend">
+        <span style="--c:var(--series-1)">Dólar observado</span>
+        <span class="dash" style="--c:var(--text-muted)">Forward teórico</span>
+      </div>
+      <div class="chart"><canvas id="fxChart" aria-label="Dólar observado histórico y forward"></canvas></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Curva de futuros HRC (SHFE)</h2>
+    <p class="sub">CNY/t, precio de liquidación por contrato (con IVA chino)</p>
+    <div class="chart"><canvas id="curveChart" aria-label="Curva de futuros HRC"></canvas></div>
+  </section>
+
+  <section class="card notes">
+    <h2>Metodología</h2>
+    <ul id="notes"></ul>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const H = ["spot", "1m", "3m", "6m"];
+const HL = { spot: "Hoy", "1m": "1 mes", "3m": "3 meses", "6m": "6 meses" };
+let cur = "usd", L, hist = [], charts = {};
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt = (v, d = 0) => v == null || isNaN(v) ? "—" : Number(v).toLocaleString("es-CL", { minimumFractionDigits: d, maximumFractionDigits: d });
+const fdate = s => new Date(s + "T12:00:00").toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric" });
+
+function chg(v, base) {
+  if (!base) return "";
+  const p = (v / base - 1) * 100;
+  if (Math.abs(p) < 0.05) return `<span class="chg">0,0%</span>`;
+  return `<span class="chg ${p > 0 ? "up" : "down"}">${p > 0 ? "▲" : "▼"} ${fmt(Math.abs(p), 1)}%</span>`;
+}
+
+function price(p, prod, kind) {   // kind: fob | puesto
+  return cur === "usd" ? p[prod][kind + "_usd_t"] : p[prod][kind + "_clp_t"];
+}
+
+function renderCards() {
+  const P = L.proyecciones, unit = cur === "usd" ? "USD/t" : "CLP/t", dec = cur === "usd" ? 0 : 0;
+  const steelCard = (prod, title, note) => {
+    const s = price(P.spot, prod, "fob");
+    return `<div class="card">
+      <div class="label">${title}</div>
+      <div class="hero">${fmt(s, dec)} <small>${unit} FOB</small></div>
+      <div class="sub">${note}</div>
+      <table><tr><th>Plazo</th><th>${unit}</th><th>vs hoy</th></tr>
+      ${H.slice(1).map(h => `<tr><td>${HL[h]}</td><td>${fmt(price(P[h], prod, "fob"), dec)}</td><td>${chg(price(P[h], prod, "fob"), s)}</td></tr>`).join("")}
+      </table></div>`;
+  };
+  const s = P.spot.usdclp;
+  document.getElementById("cards").innerHTML =
+    steelCard("hrc", "Bobina laminada en caliente (HRC)", `Spot Shanghái ${fmt(P.spot.hrc.cny_t)} CNY/t · ${fdate(L.fechas.hrc)}`) +
+    steelCard("galv", "Galvanizado Z180 0,80 mm", `HRC + premio ${fmt(L.parametros.premio_galv_usd_t)} USD/t`) +
+    `<div class="card">
+      <div class="label">Dólar observado</div>
+      <div class="hero">${fmt(s, 2)} <small>CLP/USD</small></div>
+      <div class="sub">${fdate(L.fechas.usdclp)} · ${L.fuentes.usdclp}</div>
+      <table><tr><th>Plazo</th><th>Forward</th><th>vs hoy</th></tr>
+      ${H.slice(1).map(h => `<tr><td>${HL[h]}</td><td>${fmt(P[h].usdclp, 2)}</td><td>${chg(P[h].usdclp, s)}</td></tr>`).join("")}
+      </table></div>`;
+}
+
+function renderCost() {
+  const P = L.proyecciones, p = L.parametros, unit = cur === "usd" ? "USD/t" : "CLP/t";
+  document.getElementById("costSub").textContent =
+    `${unit} · (FOB + flete ${fmt(p.flete_usd_t)} USD/t) × (1 + internación ${fmt(p.internacion_pct, 1)}%) · arancel ${fmt(p.arancel_pct)}% · sin IVA`;
+  const row = (prod, name) => `<tr><td>${name}</td>${H.map(h => `<td>${fmt(price(P[h], prod, "puesto"))}</td>`).join("")}</tr>`;
+  document.getElementById("costTable").innerHTML =
+    `<tr><th>Producto</th>${H.map(h => `<th>${HL[h]}</th>`).join("")}</tr>` +
+    row("hrc", "HRC") + row("galv", "Galvanizado Z180");
+}
+
+function baseOpts(yLabel) {
+  const text = css("--text-secondary"), grid = css("--grid");
+  return {
+    responsive: true, maintainAspectRatio: false, animation: false,
+    interaction: { mode: "index", intersect: false },
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: c => `${c.dataset.label}: ${fmt(c.parsed.y, yLabel === "CLP/USD" ? 2 : 0)} ${yLabel}` } },
+    },
+    scales: {
+      x: { type: "category", ticks: { color: text, maxTicksLimit: 7, autoSkip: true }, grid: { display: false } },
+      y: { ticks: { color: text, callback: v => fmt(v) }, grid: { color: grid }, border: { display: false } },
+    },
+    elements: { point: { radius: 0, hoverRadius: 5 }, line: { borderWidth: 2, tension: 0 } },
+  };
+}
+
+function mkChart(id, cfg) {
+  if (charts[id]) charts[id].destroy();
+  charts[id] = new Chart(document.getElementById(id), cfg);
+}
+
+// Eje temporal: histórico + días hábiles futuros hasta el último horizonte, para que
+// la proyección ocupe su largo real. Devuelve las etiquetas y la posición de cada horizonte.
+function timeline(h) {
+  const P = L.proyecciones, labels = h.map(r => r.fecha);
+  const d = new Date(labels.at(-1) + "T12:00:00"), end = P["6m"].fecha_objetivo;
+  while (labels.at(-1) < end) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() % 6) labels.push(d.toISOString().slice(0, 10));
+  }
+  const idx = { spot: h.length - 1 };
+  for (const k of H.slice(1)) idx[k] = labels.findIndex(x => x >= P[k].fecha_objetivo);
+  return { labels, idx };
+}
+
+function projSeries(n, idx, val) {
+  const a = Array(n).fill(null);
+  for (const k of H) a[idx[k]] = val(k);
+  return a;
+}
+
+function renderSteel() {
+  const P = L.proyecciones, fx = r => cur === "usd" ? 1 : +r.usdclp;
+  const h = hist.slice(-130);
+  const { labels, idx } = timeline(h);
+  const histS = key => h.map(r => r[key] ? +r[key] * fx(r) : null);
+  const proj = prod => projSeries(labels.length, idx, k => price(P[k], prod, "fob"));
+  const unit = cur === "usd" ? "USD/t" : "CLP/t";
+  document.getElementById("steelSub").textContent = `FOB China aproximado, ${unit}`;
+  const c1 = css("--series-1"), c2 = css("--series-2");
+  mkChart("steelChart", {
+    type: "line",
+    data: { labels, datasets: [
+      { label: "HRC", data: histS("hrc_fob_usd"), borderColor: c1, backgroundColor: c1 },
+      { label: "Galvanizado", data: histS("galv_fob_usd"), borderColor: c2, backgroundColor: c2 },
+      { label: "HRC proy.", data: proj("hrc"), borderColor: c1, backgroundColor: c1, borderDash: [5, 4], pointRadius: 3, spanGaps: true },
+      { label: "Galv. proy.", data: proj("galv"), borderColor: c2, backgroundColor: c2, borderDash: [5, 4], pointRadius: 3, spanGaps: true },
+    ] },
+    options: baseOpts(unit),
+  });
+}
+
+function renderFx() {
+  const P = L.proyecciones, h = hist.slice(-130), c1 = css("--series-1");
+  const { labels, idx } = timeline(h);
+  mkChart("fxChart", {
+    type: "line",
+    data: { labels, datasets: [
+      { label: "Observado", data: h.map(r => +r.usdclp), borderColor: c1, backgroundColor: c1 },
+      { label: "Forward", data: projSeries(labels.length, idx, k => P[k].usdclp), borderColor: c1, backgroundColor: c1, borderDash: [5, 4], pointRadius: 3, spanGaps: true },
+    ] },
+    options: baseOpts("CLP/USD"),
+  });
+}
+
+function renderCurve() {
+  const c = L.curva_hrc, c1 = css("--series-1");
+  const o = baseOpts("CNY/t");
+  o.elements.point.radius = 4;
+  o.plugins.tooltip.callbacks.afterLabel = ctx => `Volumen: ${fmt(c[ctx.dataIndex].volumen)} contratos`;
+  mkChart("curveChart", {
+    type: "line",
+    data: { labels: c.map(x => x.contrato), datasets: [{ label: "Liquidación", data: c.map(x => x.settle_cny), borderColor: c1, backgroundColor: c1 }] },
+    options: o,
+  });
+}
+
+function renderNotes() {
+  const p = L.parametros, r = p.compra_referencia;
+  document.getElementById("notes").innerHTML = [
+    `<b>HRC FOB aproximado</b> = precio interno chino ÷ (1 + IVA ${p.iva_china_pct}%) ÷ ${fmt(p.cny_por_usd, 4)} CNY/USD. Es una aproximación: no incluye primas ni descuentos de exportación.`,
+    `<b>Proyecciones HRC</b>: interpolación lineal de la curva de futuros SHFE a 30, 91 y 182 días. Los contratos con poco volumen pueden tener precios poco representativos. El tipo CNY/USD se mantiene en su valor de hoy.`,
+    `<b>Galvanizado</b> = HRC FOB + premio de ${fmt(p.premio_galv_usd_t)} USD/t, calibrado con su compra de ${r.mes} (${r.producto}, ${fmt(r.precio_usd_t)} USD/t ${r.incoterm} → ${fmt(r.fob_usd_t)} FOB) contra un HRC FOB promedio de ${fmt(r.hrc_fob_ref_usd_t)} USD/t ese mes.`,
+    `<b>Forward USD/CLP teórico</b> = spot × (1 + TPM ${fmt(p.tpm_pct, 2)}% × d/360) ÷ (1 + tasa USD × d/360), con T-Bills de EE.UU. a 1/3/6 meses (${H.slice(1).map(h => fmt(p.tasas_usd_pct[h], 2) + "%").join(" / ")}). No es una predicción del mercado: refleja solo el diferencial de tasas.`,
+    `<b>Fuentes</b>: ${Object.values(L.fuentes).join(" · ")}.`,
+  ].map(x => `<li>${x}</li>`).join("");
+}
+
+function render() {
+  renderCards(); renderCost(); renderSteel(); renderFx(); renderCurve(); renderNotes();
+}
+
+function parseCSV(t) {
+  const [head, ...rows] = t.trim().split(/\r?\n/);
+  const k = head.split(",");
+  return rows.map(r => Object.fromEntries(r.split(",").map((v, i) => [k[i], v])));
+}
+
+document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
+  cur = b.dataset.cur;
+  document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  render();
+}));
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+
+Promise.all([
+  fetch("data/latest.json", { cache: "no-store" }).then(r => r.json()),
+  fetch("data/history.csv", { cache: "no-store" }).then(r => r.text()),
+]).then(([latest, csv]) => {
+  L = latest; hist = parseCSV(csv);
+  const upd = new Date(L.actualizado).toLocaleString("es-CL", { dateStyle: "medium", timeStyle: "short" });
+  document.getElementById("stamp").textContent = `Actualizado ${upd}`;
+  render();
+}).catch(e => {
+  document.getElementById("cards").innerHTML = `<div class="err">No se pudieron cargar los datos: ${e.message}</div>`;
+});
+</script>
+</body>
+</html>
