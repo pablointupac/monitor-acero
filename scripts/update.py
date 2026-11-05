@@ -9,6 +9,7 @@ import io
 import json
 import os
 import sys
+import time
 import warnings
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -80,7 +81,17 @@ def hrc_curve():
 
 
 def fred_last(series):
-    txt = HTTP.get(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}", timeout=30).text
+    for i in range(4):
+        try:
+            r = HTTP.get(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series}", timeout=30)
+            r.raise_for_status()
+            txt = r.text
+            break
+        except Exception as e:
+            print(f"FRED {series} intento {i + 1}/4 falló: {e}", file=sys.stderr)
+            if i == 3:
+                raise
+            time.sleep(5 * (i + 1))
     rows = [r for r in csv.reader(io.StringIO(txt))][1:]
     rows = [r for r in rows if len(r) > 1 and r[1] not in ("", ".")]
     return rows[-1][0], float(rows[-1][1])
@@ -115,13 +126,54 @@ def dolar_observado():
             return f, float(o["value"]), "Banco Central de Chile"
         except Exception as e:
             print("BCCh falló, uso mindicador.cl:", e, file=sys.stderr)
-    s = HTTP.get("https://mindicador.cl/api/dolar", timeout=30).json()["serie"][0]
+    s = get_json("https://mindicador.cl/api/dolar")["serie"][0]
     return s["fecha"][:10], float(s["valor"]), "mindicador.cl (BCCh)"
 
 
+def get_json(url, intentos=4, **kw):
+    """GET con reintentos y espera creciente (mindicador.cl a veces no responde)."""
+    kw.setdefault("timeout", 30)
+    ultimo = None
+    for i in range(intentos):
+        try:
+            r = HTTP.get(url, **kw)
+            r.raise_for_status()
+            return r.json()
+        except Exception as e:
+            ultimo = e
+            print(f"Intento {i + 1}/{intentos} falló para {url}: {e}", file=sys.stderr)
+            time.sleep(5 * (i + 1))
+    raise ultimo
+
+
 def tpm():
-    s = HTTP.get("https://mindicador.cl/api/tpm", timeout=30).json()["serie"][0]
-    return float(s["valor"])
+    """TPM (%): mindicador.cl -> API del BCCh -> último valor guardado."""
+    try:
+        return float(get_json("https://mindicador.cl/api/tpm")["serie"][0]["valor"])
+    except Exception as e:
+        print("TPM: mindicador.cl falló:", e, file=sys.stderr)
+    user, pwd = os.environ.get("BCCH_USER"), os.environ.get("BCCH_PASS")
+    if user and pwd:
+        try:
+            r = get_json(
+                "https://si3.bcentral.cl/SieteRestWS/SieteRestWS.ashx",
+                params={
+                    "user": user, "pass": pwd, "function": "GetSeries",
+                    "timeseries": "F022.TPM.TIN.D001.NO.Z.D",
+                    "firstdate": (date.today() - timedelta(days=30)).isoformat(),
+                    "lastdate": date.today().isoformat(),
+                },
+            )
+            obs = [o for o in r["Series"]["Obs"] if o.get("statusCode") == "OK"]
+            return float(obs[-1]["value"])
+        except Exception as e:
+            print("TPM: BCCh falló:", e, file=sys.stderr)
+    try:
+        v = json.loads((DATA / "latest.json").read_text(encoding="utf-8"))["parametros"]["tpm_pct"]
+        print(f"TPM: usando último valor guardado ({v}%)", file=sys.stderr)
+        return float(v)
+    except Exception:
+        raise RuntimeError("No se pudo obtener la TPM de ninguna fuente")
 
 
 # ---------------------------------------------------------------- cálculo
