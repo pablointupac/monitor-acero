@@ -1,76 +1,76 @@
 {
- "actualizado": "2026-11-09T21:25+00:00",
+ "actualizado": "2026-11-10T18:37+00:00",
  "fechas": {
-  "hrc": "2026-11-09",
-  "usdclp": "2026-11-09"
+  "hrc": "2026-11-10",
+  "usdclp": "2026-11-10"
  },
  "proyecciones": {
   "spot": {
-   "fecha_objetivo": "2026-11-09",
-   "usdclp": 979.88,
+   "fecha_objetivo": "2026-11-10",
+   "usdclp": 969.8,
    "hrc": {
-    "cny_t": 3210.0,
-    "fob_usd_t": 425.3,
-    "fob_clp_t": 416711,
-    "puesto_usd_t": 507.4,
-    "puesto_clp_t": 497217
+    "cny_t": 3212.0,
+    "fob_usd_t": 425.1,
+    "fob_clp_t": 412264,
+    "puesto_usd_t": 507.3,
+    "puesto_clp_t": 491936
    },
    "galv": {
-    "fob_usd_t": 661.6,
-    "fob_clp_t": 648333,
-    "puesto_usd_t": 752.1,
-    "puesto_clp_t": 736947
+    "fob_usd_t": 661.5,
+    "fob_clp_t": 641503,
+    "puesto_usd_t": 751.9,
+    "puesto_clp_t": 729199
    }
   },
   "1m": {
-   "fecha_objetivo": "2026-12-09",
-   "usdclp": 980.27,
+   "fecha_objetivo": "2026-12-10",
+   "usdclp": 970.19,
    "hrc": {
-    "cny_t": 3137.6,
-    "fob_usd_t": 415.7,
-    "fob_clp_t": 407475,
-    "puesto_usd_t": 497.5,
-    "puesto_clp_t": 487684
+    "cny_t": 3130.8,
+    "fob_usd_t": 414.4,
+    "fob_clp_t": 402006,
+    "puesto_usd_t": 496.1,
+    "puesto_clp_t": 481346
    },
    "galv": {
-    "fob_usd_t": 652.1,
-    "fob_clp_t": 639189,
-    "puesto_usd_t": 742.2,
-    "puesto_clp_t": 727509
+    "fob_usd_t": 650.7,
+    "fob_clp_t": 631337,
+    "puesto_usd_t": 740.8,
+    "puesto_clp_t": 718703
    }
   },
   "3m": {
-   "fecha_objetivo": "2027-02-08",
-   "usdclp": 980.64,
+   "fecha_objetivo": "2027-02-09",
+   "usdclp": 970.55,
    "hrc": {
-    "cny_t": 3195.2,
-    "fob_usd_t": 423.3,
-    "fob_clp_t": 415115,
-    "puesto_usd_t": 505.4,
-    "puesto_clp_t": 495616
+    "cny_t": 3196.6,
+    "fob_usd_t": 423.1,
+    "fob_clp_t": 410611,
+    "puesto_usd_t": 505.2,
+    "puesto_clp_t": 490276
    },
    "galv": {
-    "fob_usd_t": 659.7,
-    "fob_clp_t": 646917,
-    "puesto_usd_t": 750.1,
-    "puesto_clp_t": 735531
+    "fob_usd_t": 659.4,
+    "fob_clp_t": 640028,
+    "puesto_usd_t": 749.8,
+    "puesto_clp_t": 727723
    }
   },
   "6m": {
-   "fecha_objetivo": "2027-05-10",
-   "usdclp": 981.19,
+   "fecha_objetivo": "2027-05-11",
+   "usdclp": 971.1,
    "hrc": {
-    "cny_t": 3210.7,
-    "fob_usd_t": 425.4,
-    "fob_clp_t": 417355,
-    "puesto_usd_t": 507.5,
-    "puesto_clp_t": 497972
+    "cny_t": 3206.5,
+    "fob_usd_t": 424.4,
+    "fob_clp_t": 412103,
+    "puesto_usd_t": 506.5,
+    "puesto_clp_t": 491858
    },
    "galv": {
-    "fob_usd_t": 661.7,
-    "fob_clp_t": 649287,
-    "puesto_usd_t": 752.2,
-    "puesto_clp_t": 738021
+    "fob_usd_t": 660.7,
+    "fob_clp_t": 641649,
+    "puesto_usd_t": 751.1,
+    "puesto_clp_t": 729438
    }
   }
  },
@@ -78,65 +78,65 @@
   {
    "contrato": "HC2611",
    "vence": "2026-11-15",
-   "settle_cny": 3136.0,
-   "volumen": 120,
-   "fecha": "2026-11-09"
+   "settle_cny": 3135.0,
+   "volumen": 390,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2612",
    "vence": "2026-12-15",
-   "settle_cny": 3138.0,
-   "volumen": 601,
-   "fecha": "2026-11-09"
+   "settle_cny": 3130.0,
+   "volumen": 367,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2701",
    "vence": "2027-01-15",
-   "settle_cny": 3196.0,
-   "volumen": 410061,
-   "fecha": "2026-11-09"
+   "settle_cny": 3191.0,
+   "volumen": 317366,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2702",
    "vence": "2027-02-15",
-   "settle_cny": 3195.0,
-   "volumen": 30,
-   "fecha": "2026-11-09"
+   "settle_cny": 3198.0,
+   "volumen": 11,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2703",
    "vence": "2027-03-15",
-   "settle_cny": 3204.0,
-   "volumen": 68161,
-   "fecha": "2026-11-09"
+   "settle_cny": 3197.0,
+   "volumen": 61831,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2704",
    "vence": "2027-04-15",
-   "settle_cny": 3209.0,
-   "volumen": 5,
-   "fecha": "2026-11-09"
+   "settle_cny": 3203.0,
+   "volumen": 6,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2705",
    "vence": "2027-05-15",
-   "settle_cny": 3211.0,
-   "volumen": 55566,
-   "fecha": "2026-11-09"
+   "settle_cny": 3207.0,
+   "volumen": 39560,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2706",
    "vence": "2027-06-15",
-   "settle_cny": 3208.0,
-   "volumen": 30,
-   "fecha": "2026-11-09"
+   "settle_cny": 3212.0,
+   "volumen": 47,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2707",
    "vence": "2027-07-15",
-   "settle_cny": 3217.0,
-   "volumen": 8,
-   "fecha": "2026-11-09"
+   "settle_cny": 3225.0,
+   "volumen": 6,
+   "fecha": "2026-11-10"
   },
   {
    "contrato": "HC2708",
@@ -147,7 +147,7 @@
   }
  ],
  "parametros": {
-  "cny_por_usd": 6.6798,
+  "cny_por_usd": 6.6866,
   "tpm_pct": 4.5,
   "tasas_usd_pct": {
    "1m": 4.02,
