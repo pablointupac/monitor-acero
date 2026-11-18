@@ -37,16 +37,24 @@ HISTORY_FIELDS = [
 
 def hrc_spot():
     """Spot HRC Shanghái (CNY/t, con IVA) del último día hábil chino."""
+    # akshare >=1.20 usa `symbols="HC"`; versiones anteriores usaban `vars_list=["HC"]`.
+    variantes = ({"symbols": "HC"}, {"vars_list": ["HC"]})
     d = date.today()
+    ultimo_error = None
     for _ in range(10):
-        try:
-            df = ak.futures_spot_price(d.strftime("%Y%m%d"), vars_list=["HC"])
-            if df is not None and len(df):
-                return d.isoformat(), float(df.iloc[0]["spot_price"])
-        except Exception:
-            pass
+        for kw in variantes:
+            try:
+                df = ak.futures_spot_price(d.strftime("%Y%m%d"), **kw)
+                if df is not None and len(df):
+                    return d.isoformat(), float(df.iloc[0]["spot_price"])
+            except TypeError as e:  # parámetro no soportado por esta versión
+                ultimo_error = e
+                continue
+            except Exception as e:
+                ultimo_error = e
+                break
         d -= timedelta(days=1)
-    raise RuntimeError("No se pudo obtener el spot HRC")
+    raise RuntimeError(f"No se pudo obtener el spot HRC (último error: {ultimo_error!r})")
 
 
 def hrc_curve():
